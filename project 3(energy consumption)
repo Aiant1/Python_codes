@@ -29,7 +29,10 @@ min2=[]
 not_in_operation_from=[]
 not_in_operation_to=[]
 
-df=pd.read_csv("E:/final.csv")
+df=pd.read_csv("E:/machine_data.csv")
+df["ymd"] = pd.to_datetime(df["ymd"], format = "%Y%m%d")
+df["date"] = df["ymd"].apply(lambda x: x.date())
+del df["ymd"]
 df["Time"] = pd.to_datetime(df.date) + df.h.astype('timedelta64[h]') + df.m.astype('timedelta64[m]')
 del df["date"], df["h"], df["m"]
 #print (df)
