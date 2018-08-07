@@ -195,7 +195,7 @@ for x,y in group_1:
 
 
 new_data_frame=pd.DataFrame({" date":list3,"higher_stabilized_range":list_for_max_avg,"max_energy_consumption":max2,"min_energy_consumption":min2,"lower_stabilized_range":list_for_min_avg,"comment":list5,"number_of_times_the_peaks_crossed_the_upper_thresold_value":l1,"number_of_times_the_peaks_crossed_the_lower_thresold_value":m1,"energy_consumption_rate_per_day":avg2_list,"start_time":start,"stop_time":stop,"not_in_operation_from":not_in_operation_from,"not_in_operation_to":not_in_operation_to})
-#new_data_frame.to_csv("smel_out9.csv",index=None)
+#new_data_frame.to_csv("machine_data_output.csv",index=None)
 #print (new_data_frame)    
 #            
         
