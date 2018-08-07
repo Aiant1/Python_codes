@@ -1,0 +1,202 @@
+import numpy as np
+import datetime as dt
+import pandas as pd
+import matplotlib.pyplot as plt
+import matplotlib as mpl
+import sys
+list_for_max=[]
+list_for_min=[]
+list_for_min_avg=[]
+list_for_max_avg=[]
+list3=[]
+list5=[]
+avg_list=[]
+avg1_list=[]
+avg2_list=[]
+stop_time1=[]
+start_time1=[]
+g=[]
+start=[]
+stop=[]
+m=[]
+l=[]
+n=[]
+p=[]
+l1=[]
+m1=[]
+max2=[]
+min2=[]
+not_in_operation_from=[]
+not_in_operation_to=[]
+
+df=pd.read_csv("E:/final.csv")
+df["Time"] = pd.to_datetime(df.date) + df.h.astype('timedelta64[h]') + df.m.astype('timedelta64[m]')
+del df["date"], df["h"], df["m"]
+#print (df)
+#sys.exit()
+lo=[]
+group_1 = df.groupby(pd.Grouper(key='Time', freq='1D'))
+for x,y in group_1:
+    
+    gr_1=pd.DataFrame(y)
+    n=np.mean(gr_1["v"])
+    lo.append(n)
+n1=np.mean(lo)
+
+
+
+group_1 = df.groupby(pd.Grouper(key='Time', freq='1D'))
+for x,y in group_1:
+    list3.append(x)
+    gr_1=pd.DataFrame(y)
+#    print (gr_1)
+    
+    group_2=gr_1.groupby(pd.Grouper(key='Time', freq='1h'))
+    for x,y in group_2:
+        
+        gr_2=pd.DataFrame(y) 
+        if np.max(gr_2["v"])>=n1*.55:
+            
+        
+            list_for_max.append(np.max(gr_2["v"]))
+        if np.min(gr_2["v"])>=n1*.55:
+           
+            list_for_min.append(np.min(gr_2["v"]))
+    avg1=np.mean(list_for_max)
+    
+    
+#    
+    avg2=np.mean(list_for_min)
+    
+    list_for_max_avg.append(avg1)
+    list_for_min_avg.append(avg2)
+    list_for_max[:]=[]
+    list_for_min[:]=[]
+
+
+new_data_frame=pd.DataFrame({" a":list3,"b":list_for_max_avg,"c":list_for_min_avg})
+new_data_frame= (new_data_frame.fillna(0))
+#print (new_data_frame)
+
+
+
+
+    
+for i in range(len(new_data_frame)):
+   
+        
+        
+        
+       a1=new_data_frame["b"][i]
+       b1=new_data_frame["c"][i]
+       if (b1>=n1*.55 and a1>=n1):
+           
+           
+         
+           list5.append("--")
+       elif (a1==0 and b1==0):
+           list5.append("cant be determined")
+       else:
+           list5.append("energy consumpttion is low")
+      
+           
+new_data_frame=pd.DataFrame({" date":list3,"higher_stabilized_range":list_for_max_avg,"lower_stabilized_range":list_for_min_avg,"comment":list5})
+new_data_frame= (new_data_frame.fillna(0))
+
+
+print (new_data_frame)
+
+
+upper_thresold_value=np.mean(new_data_frame["higher_stabilized_range"])
+lower_thresold_value=np.mean(new_data_frame["lower_stabilized_range"])
+
+
+#print (upper_thresold_value,lower_thresold_value)
+group_1 = df.groupby(pd.Grouper(key='Time', freq='1D'))
+for x,y in group_1:
+    gr_1=pd.DataFrame(y)
+    a11=len(gr_1[gr_1["v"]>int(upper_thresold_value)])
+    b11=len(gr_1[gr_1["v"]<int(lower_thresold_value)])
+    l1.append(a11)
+    m1.append(b11)
+print (l1,m1)
+
+#sys.exit()
+
+#
+##
+group_1 = df.groupby(pd.Grouper(key='Time', freq='1D'))
+for x,y in group_1:
+    
+
+    gr_1=pd.DataFrame(y)
+    group_7 = gr_1.groupby(pd.Grouper(key='Time', freq='1H'))
+    for x,y in group_7:
+        df1=pd.DataFrame(y)
+        len1=len(df1)
+#        print (lower_thresold_value)
+#        print (df1[df1["v"]>lower_thresold_value])
+       
+        if (len(df1[df1["v"]>lower_thresold_value])>=len1/2):
+            l.append(df1[df1["v"]>lower_thresold_value])
+            
+        
+        else:
+            m.append(df1[df1["v"]<lower_thresold_value])
+   
+            
+    if len(l)==0:
+        l.append("not in operation")
+    else:
+        
+        a5=pd.concat(l)
+        #print (a5)
+        l=a5["Time"].dt.time.tolist()
+    #print (l)
+   
+    if len(m)==0:
+        m.append("all day running")
+    else:
+        b5=pd.concat(m)
+        m=b5["Time"].dt.time.tolist()
+    
+    start.append(str(l[0]))
+
+    stop.append(str(l[-1]))
+#    print (stop)
+
+    l[:]=[]
+    not_in_operation_from.append(m[0])
+    not_in_operation_to.append(m[-1])
+    m[:]=[]
+#print (start)
+#print (stop)
+group_1 = df.groupby(pd.Grouper(key='Time', freq='1D'))
+for x,y in group_1:
+    
+    gr_1=pd.DataFrame(y)
+    n2=np.max(gr_1["v"])
+    max2.append(n2)
+    n3=np.min(gr_1["v"])
+    min2.append(n3)
+group_1 = df.groupby(pd.Grouper(key='Time', freq='1D'))
+for x,y in group_1:
+    
+    gr_1=pd.DataFrame(y)
+#    print (gr_1)
+    
+    n8=np.mean(gr_1["v"])
+    avg2_list.append(n8)
+    
+       
+
+
+new_data_frame=pd.DataFrame({" date":list3,"higher_stabilized_range":list_for_max_avg,"max_energy_consumption":max2,"min_energy_consumption":min2,"lower_stabilized_range":list_for_min_avg,"comment":list5,"number_of_times_the_peaks_crossed_the_upper_thresold_value":l1,"number_of_times_the_peaks_crossed_the_lower_thresold_value":m1,"energy_consumption_rate_per_day":avg2_list,"start_time":start,"stop_time":stop,"not_in_operation_from":not_in_operation_from,"not_in_operation_to":not_in_operation_to})
+#new_data_frame.to_csv("smel_out9.csv",index=None)
+#print (new_data_frame)    
+#            
+        
+#   
+
+##        
+##            
